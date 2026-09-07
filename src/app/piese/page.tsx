@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { createClient } from "../../lib/supabase/client";
 
@@ -62,7 +62,7 @@ const fallbackCategories = [
 
 const categories = fallbackCategories;
 
-export default function PartsPage() {
+function PartsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -992,5 +992,28 @@ export default function PartsPage() {
         </p>
       </footer>
     </main>
+  );
+}
+
+export default function PartsPage() {
+  return (
+    <Suspense
+      fallback={
+        <main
+          style={{
+            minHeight: "100vh",
+            display: "grid",
+            placeItems: "center",
+            background: "#f8fafc",
+            color: "#0f172a",
+            fontFamily: "Arial, Helvetica, sans-serif",
+          }}
+        >
+          Se încarcă piesele...
+        </main>
+      }
+    >
+      <PartsPageContent />
+    </Suspense>
   );
 }
