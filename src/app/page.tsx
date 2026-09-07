@@ -501,7 +501,7 @@ export default function Home() {
 
         <Link
           href="/garaj"
-          className="white-btn"
+          className="cta-btn"
         >
           Adaugă mașina →
         </Link>
