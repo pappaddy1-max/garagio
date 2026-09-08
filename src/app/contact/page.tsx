@@ -1,9 +1,75 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { FormEvent, useState } from "react";
 
 import { company } from "../data/company";
 
 export default function ContactPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const payload = {
+      name: String(formData.get("name") || "").trim(),
+      email: String(formData.get("email") || "").trim(),
+      phone: String(formData.get("phone") || "").trim(),
+      subject: String(formData.get("subject") || "").trim(),
+      orderNumber: String(formData.get("orderNumber") || "").trim(),
+      message: String(formData.get("message") || "").trim(),
+    };
+
+    setSuccessMessage("");
+    setErrorMessage("");
+
+    if (!payload.name || !payload.email || !payload.message) {
+      setErrorMessage(
+        "Completează numele, adresa de email și mesajul."
+      );
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(
+          data?.error || "Mesajul nu a putut fi trimis."
+        );
+      }
+
+      form.reset();
+      setSuccessMessage(
+        "Mesajul a fost trimis cu succes. Îți vom răspunde cât mai curând."
+      );
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "A apărut o eroare la trimiterea mesajului."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <main
       style={{
@@ -248,15 +314,12 @@ export default function ContactPage() {
                 lineHeight: 1.6,
               }}
             >
-              Formularul este pregătit vizual. În etapa următoare îl
-              conectăm la backend pentru trimiterea mesajelor direct în
-              inbox-ul Garagio.
+              Completează formularul, iar mesajul va fi trimis direct
+              către echipa Garagio.
             </p>
 
             <form
-              action={`mailto:${company.email}`}
-              method="post"
-              encType="text/plain"
+              onSubmit={handleSubmit}
               style={{
                 display: "grid",
                 gap: "16px",
@@ -268,6 +331,8 @@ export default function ContactPage() {
                   type="text"
                   name="name"
                   placeholder="Numele tău"
+                  autoComplete="name"
+                  required
                   style={fieldStyle}
                 />
               </label>
@@ -278,6 +343,8 @@ export default function ContactPage() {
                   type="email"
                   name="email"
                   placeholder="email@exemplu.ro"
+                  autoComplete="email"
+                  required
                   style={fieldStyle}
                 />
               </label>
@@ -288,6 +355,7 @@ export default function ContactPage() {
                   type="tel"
                   name="phone"
                   placeholder="07..."
+                  autoComplete="tel"
                   style={fieldStyle}
                 />
               </label>
@@ -324,6 +392,7 @@ export default function ContactPage() {
                   name="message"
                   placeholder="Scrie aici detaliile solicitării..."
                   rows={7}
+                  required
                   style={{
                     ...fieldStyle,
                     resize: "vertical",
@@ -334,6 +403,7 @@ export default function ContactPage() {
 
               <button
                 type="submit"
+                disabled={isSubmitting}
                 style={{
                   border: 0,
                   borderRadius: "10px",
@@ -342,11 +412,46 @@ export default function ContactPage() {
                   minHeight: "50px",
                   padding: "0 20px",
                   fontWeight: 900,
-                  cursor: "pointer",
+                  cursor: isSubmitting ? "not-allowed" : "pointer",
+                  opacity: isSubmitting ? 0.7 : 1,
                 }}
               >
-                Trimite mesajul
+                {isSubmitting ? "Se trimite..." : "Trimite mesajul"}
               </button>
+
+              {successMessage && (
+                <div
+                  role="status"
+                  style={{
+                    padding: "14px",
+                    borderRadius: "10px",
+                    background: "#ecfdf5",
+                    border: "1px solid #a7f3d0",
+                    color: "#047857",
+                    fontSize: "12px",
+                    lineHeight: 1.55,
+                  }}
+                >
+                  {successMessage}
+                </div>
+              )}
+
+              {errorMessage && (
+                <div
+                  role="alert"
+                  style={{
+                    padding: "14px",
+                    borderRadius: "10px",
+                    background: "#fef2f2",
+                    border: "1px solid #fecaca",
+                    color: "#b91c1c",
+                    fontSize: "12px",
+                    lineHeight: 1.55,
+                  }}
+                >
+                  {errorMessage}
+                </div>
+              )}
             </form>
 
             <div
