@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import VehicleSelector from "./components/VehicleSelector";
+import { company } from "./data/company";
 
 const categories = [
   {
@@ -507,43 +508,128 @@ export default function Home() {
         </Link>
       </section>
 
-      <footer>
-        <div className="footer-brand">
-          <Image
-            src="/logo-garagio-v2.png"
-            alt="Garagio"
-            width={500}
-            height={150}
-            className="footer-logo"
-          />
+      <footer className="site-footer">
+        <div className="footer-main">
+          <div className="footer-company">
+            <div className="footer-logo-shell">
+              <Image
+                src="/logo-garagio-v2.png"
+                alt="Garagio"
+                width={500}
+                height={150}
+                className="footer-logo"
+              />
+            </div>
+
+            <p className="footer-tagline">
+              Garajul digital al mașinii tale.
+            </p>
+
+            <div className="footer-company-data">
+              <strong>{company.legalName}</strong>
+
+              <span>
+                CUI: {company.cui}
+              </span>
+
+              <span>
+                Nr. Registrul Comerțului:{" "}
+                {company.registrationNumber}
+              </span>
+
+              <span>
+                {company.address}
+              </span>
+
+              <a href={`tel:${company.phone.replace(/\s/g, "")}`}>
+                {company.phone}
+              </a>
+
+              <a href={`mailto:${company.email}`}>
+                {company.email}
+              </a>
+            </div>
+          </div>
+
+          <div className="footer-navigation">
+            <div className="footer-column">
+              <strong>Garagio</strong>
+
+              <Link href="/">
+                Acasă
+              </Link>
+
+              <Link href="/piese">
+                Piese auto
+              </Link>
+
+              <Link href="/service-uri">
+                Service-uri
+              </Link>
+
+              <Link href="/garaj">
+                Garajul meu
+              </Link>
+
+              <Link href="/cont">
+                Cont
+              </Link>
+            </div>
+
+            <div className="footer-column">
+              <strong>Informații</strong>
+
+              <Link href="/termeni">
+                Termeni și condiții
+              </Link>
+
+              <Link href="/livrare">
+                Livrare
+              </Link>
+
+              <Link href="/retur">
+                Retur și anulare
+              </Link>
+
+              <Link href="/confidentialitate">
+                Confidențialitate / GDPR
+              </Link>
+
+              <Link href="/contact">
+                Contact
+              </Link>
+            </div>
+
+            <div className="footer-column">
+              <strong>Consumatori</strong>
+
+              <a
+                href="https://anpc.ro/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                ANPC
+              </a>
+
+              <span className="footer-note">
+                Informațiile privind soluționarea
+                alternativă a litigiilor vor fi
+                afișate în secțiunea dedicată.
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="footer-links">
-          <Link href="/">
-            Acasă
-          </Link>
+        <div className="footer-bottom">
+          <span>
+            © 2026 {company.brand}. Toate drepturile
+            rezervate.
+          </span>
 
-          <Link href="/piese">
-            Piese auto
-          </Link>
-
-          <Link href="/service-uri">
-            Service-uri
-          </Link>
-
-          <Link href="/garaj">
-            Garajul meu
-          </Link>
-
-          <Link href="/cont">
-            Cont
-          </Link>
+          <span>
+            {company.website.replace("https://", "")}
+          </span>
         </div>
-
-        <p>
-          © 2026 Garagio. Toate drepturile
-          rezervate.
-        </p>
       </footer>
     </main>
   );

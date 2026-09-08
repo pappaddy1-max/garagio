@@ -50,7 +50,7 @@ export default function CheckoutPage() {
     useState<CustomerType>("individual");
 
   const [paymentMethod, setPaymentMethod] =
-    useState<PaymentMethod>("card");
+    useState<PaymentMethod>("cash");
 
   const [acceptTerms, setAcceptTerms] =
     useState(false);
@@ -370,8 +370,8 @@ export default function CheckoutPage() {
             </h1>
 
             <p>
-              Comanda ta a fost salvată în
-              sistemul demo Garagio.
+              Comanda ta a fost înregistrată cu succes
+              în sistemul Garagio.
             </p>
 
             <div className="order-number-box">
@@ -423,10 +423,8 @@ export default function CheckoutPage() {
             </div>
 
             <div className="demo-warning">
-              În această etapă nu a fost
-              procesată nicio plată reală și
-              comanda nu a fost transmisă
-              unui furnizor.
+              Vei primi pe email confirmarea și
+              actualizările privind procesarea comenzii.
             </div>
 
             <div className="success-actions">
@@ -883,8 +881,8 @@ export default function CheckoutPage() {
                       </h2>
 
                       <p>
-                        Pentru moment metodele
-                        sunt demonstrative.
+                        Alege metoda disponibilă pentru
+                        finalizarea comenzii.
                       </p>
                     </div>
                   </div>
@@ -892,17 +890,9 @@ export default function CheckoutPage() {
                   <div className="payment-options">
                     <button
                       type="button"
-                      className={
-                        paymentMethod ===
-                        "card"
-                          ? "payment-option active"
-                          : "payment-option"
-                      }
-                      onClick={() =>
-                        setPaymentMethod(
-                          "card"
-                        )
-                      }
+                      className="payment-option payment-option-disabled"
+                      disabled
+                      aria-disabled="true"
                     >
                       <div>
                         <strong>
@@ -910,11 +900,13 @@ export default function CheckoutPage() {
                         </strong>
 
                         <span>
-                          Visa / Mastercard
+                          Visa / Mastercard · În curând
                         </span>
                       </div>
 
-                      <span className="payment-radio" />
+                      <span className="payment-coming-soon">
+                        ÎN CURÂND
+                      </span>
                     </button>
 
                     <button
@@ -1100,10 +1092,43 @@ export default function CheckoutPage() {
                   />
 
                   <span>
-                    Sunt de acord cu
-                    termenii și condițiile
-                    și politica de
-                    confidențialitate.
+                    Am citit și sunt de acord cu{" "}
+                    <Link
+                      href="/termeni"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="checkout-legal-link"
+                    >
+                      Termenii și condițiile
+                    </Link>
+                    , inclusiv informațiile privind{" "}
+                    <Link
+                      href="/livrare"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="checkout-legal-link"
+                    >
+                      livrarea
+                    </Link>
+                    {" "}și{" "}
+                    <Link
+                      href="/retur"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="checkout-legal-link"
+                    >
+                      returul și anularea
+                    </Link>
+                    , și confirm că am luat la cunoștință{" "}
+                    <Link
+                      href="/confidentialitate"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="checkout-legal-link"
+                    >
+                      Politica de confidențialitate
+                    </Link>
+                    .
                   </span>
                 </label>
 
@@ -1116,11 +1141,6 @@ export default function CheckoutPage() {
                 >
                   {isSubmitting
                     ? "Se procesează..."
-                    : paymentMethod ===
-                      "card"
-                    ? `Plătește ${total.toFixed(
-                        2
-                      )} lei`
                     : "Plasează comanda"}
                 </button>
 
@@ -1139,9 +1159,8 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="checkout-demo-notice">
-                  DEMO — Butonul nu
-                  procesează încă o plată
-                  reală.
+                  Plata cu cardul va fi disponibilă
+                  după activarea procesatorului online.
                 </div>
               </aside>
             </form>
